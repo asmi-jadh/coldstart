@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cold Start Prediction</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 400px;
+            margin: 60px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result h3 {
+            color: #333;
+        }
+
+        .result h4 {
+            color: #666;
+        }
+    </style>
+
+    <script>
+        function showForm() {
+            var model = document.getElementById("model_type").value;
+
+            document.getElementById("gcp_form").style.display = "none";
+            document.getElementById("azure_form").style.display = "none";
+
+            if (model === "gcp") {
+                document.getElementById("gcp_form").style.display = "block";
+            }
+            else if (model === "azure") {
+                document.getElementById("azure_form").style.display = "block";
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🚀 Cold Start Predictor</h2>
+
+    <form method="POST">
+
+        <label>Select Model</label>
+        <select name="model_type" id="model_type" onchange="showForm()" required>
+            <option value="">--Select Model--</option>
+            <option value="gcp">GCP</option>
+            <option value="azure">Azure</option>
+        </select>
+
+        <!-- GCP -->
+        <div id="gcp_form" style="display:none;">
+            <h4>GCP Inputs</h4>
+
+            <input type="number" name="hour" placeholder="Hour (0-23)">
+            <input type="number" name="day" placeholder="Day (1-6)">
+            <input type="number" name="latency" placeholder="Latency">
+            <input type="number" name="request" placeholder="Request Count">
+        </div>
+
+        <!-- AZURE -->
+        <div id="azure_form" style="display:none;">
+            <h4>Azure Inputs</h4>
+
+            <input type="number" name="avg" placeholder="Average Duration">
+            <input type="number" name="spread" placeholder="Duration Spread">
+            <input type="number" name="ratio" placeholder="P99/P50 Ratio">
+            <input type="number" name="memory" placeholder="Memory (MB)">
+            <input type="number" name="mem_spread" placeholder="Memory Spread">
+        </div>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction %}
+    <div class="result">
+        <h3>{{ prediction }}</h3>
+        <h4>Probability: {{ probability }}</h4>
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
